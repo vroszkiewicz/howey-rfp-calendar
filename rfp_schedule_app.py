@@ -34,7 +34,7 @@ def next_valid_business_day(date, holiday_list):
 # ---- FUNCTION: GET 2ND AND 4TH MONDAYS ----
 def get_recurring_mondays(start_date, months=12):
     """
-    Returns a list of 2nd and 4th Mondays for each month, starting after the given date.
+    Returns a list of 2nd and 4th Mondays starting after the given date.
     """
     results = []
     year = start_date.year
@@ -44,11 +44,12 @@ def get_recurring_mondays(start_date, months=12):
         cal = monthcalendar(year, month)
         mondays = [week[MONDAY] for week in cal if week[MONDAY] != 0]
 
-        if len(mondays) >= 4:
+        if len(mondays) >= 2:
             second_monday = datetime(year, month, mondays[1])
-            fourth_monday = datetime(year, month, mondays[3])
             if second_monday > start_date:
                 results.append(second_monday)
+        if len(mondays) >= 4:
+            fourth_monday = datetime(year, month, mondays[3])
             if fourth_monday > start_date:
                 results.append(fourth_monday)
 

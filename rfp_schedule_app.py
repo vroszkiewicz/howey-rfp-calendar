@@ -9,6 +9,7 @@ from dateutil import parser
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Howey RFP Calendar Generator", layout="centered")
+st.markdown("<div style='text-align: center'><img src='Howey-in-the-Hills LOGO.png' width='150'></div>", unsafe_allow_html=True)
 
 # --- BRANDING AND HEADING ---
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)

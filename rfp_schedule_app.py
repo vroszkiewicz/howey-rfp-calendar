@@ -10,7 +10,7 @@ st.set_page_config(page_title="RFP Calendar Generator", layout="centered")
 
 # ---- HEADER AND BRANDING ----
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Generator</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; color: #004d7a;'>Public Works – RFP Schedule Generator</h2>", unsafe_allow_html=True)
 st.write("This tool generates an RFP schedule, skipping holidays and weekends, and includes the next Town Council meeting.")
 
 # ---- STEP 1: RFP DATE INPUT ----
@@ -25,42 +25,42 @@ else:
 
 # ---- FUNCTION: NEXT VALID BUSINESS DAY ----
 def next_valid_business_day(date, holiday_list):
+    """
+    Moves a date forward until it lands on a Monday–Thursday and avoids holidays.
+    """
     adjusted = False
-    while date.weekday() >= 4 or date in holiday_list:
+    while date.weekday() >= 4 or date in holiday_list:  # Friday (4) or weekend
         date += timedelta(days=1)
         adjusted = True
     return date, adjusted
 
-# ---- FUNCTION: GET 2ND AND 4TH MONDAYS ----
-def get_recurring_mondays(start_date, months=12):
+# ---- FUNCTION: FIND NEXT 2ND OR 4TH MONDAY ----
+def find_next_council_meeting(after_date):
     """
-    Returns a list of 2nd and 4th Mondays starting after the given date.
+    Finds the next 2nd or 4th Monday of the month after the given date.
     """
-    results = []
-    year = start_date.year
-    month = start_date.month
+    year = after_date.year
+    month = after_date.month
 
-    for _ in range(months):
+    while True:
         cal = monthcalendar(year, month)
         mondays = [week[MONDAY] for week in cal if week[MONDAY] != 0]
 
+        potential_dates = []
         if len(mondays) >= 2:
-            second_monday = datetime(year, month, mondays[1])
-            if second_monday > start_date:
-                results.append(second_monday)
+            potential_dates.append(datetime(year, month, mondays[1]))  # 2nd Monday
         if len(mondays) >= 4:
-            fourth_monday = datetime(year, month, mondays[3])
-            if fourth_monday > start_date:
-                results.append(fourth_monday)
+            potential_dates.append(datetime(year, month, mondays[3]))  # 4th Monday
+
+        for date in sorted(potential_dates):
+            if date > after_date:
+                return date
 
         # Move to next month
-        if month == 12:
+        month += 1
+        if month > 12:
             month = 1
             year += 1
-        else:
-            month += 1
-
-    return results
 
 # ---- MAIN LOGIC ----
 if rfp_posted_date:
@@ -89,20 +89,14 @@ if rfp_posted_date:
     st.markdown("### Step 2: Locate the Next Town Council Meeting")
 
     negotiation_date = schedule["Contract Negotiated with Town"]
-    meetings = get_recurring_mondays(start_date=negotiation_date)
+    next_meeting = find_next_council_meeting(after_date=negotiation_date)
 
-    if meetings:
-        next_meeting = next((m for m in meetings if m > negotiation_date), None)
-        if next_meeting:
-            council_final, council_adjusted = next_valid_business_day(next_meeting, us_holidays)
-            schedule["Town Council Approval of Contract"] = council_final
-            adjustments["Town Council Approval of Contract"] = council_adjusted
-        else:
-            st.warning("No Town Council meeting found after contract negotiation.")
-            schedule["Town Council Approval of Contract"] = "Not found"
-            adjustments["Town Council Approval of Contract"] = False
+    if next_meeting:
+        council_final, council_adjusted = next_valid_business_day(next_meeting, us_holidays)
+        schedule["Town Council Approval of Contract"] = council_final
+        adjustments["Town Council Approval of Contract"] = council_adjusted
     else:
-        st.warning("Could not generate Town Council meeting dates.")
+        st.warning("Could not determine a valid Town Council meeting date.")
         schedule["Town Council Approval of Contract"] = "Unavailable"
         adjustments["Town Council Approval of Contract"] = False
 

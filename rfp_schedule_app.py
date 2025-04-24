@@ -32,6 +32,9 @@ def next_valid_business_day(date, holiday_list):
 
 # ---- FUNCTION: FIND NEXT 2ND OR 4TH MONDAY ----
 def get_next_2nd_or_4th_monday(after_date):
+    if isinstance(after_date, datetime.date) and not isinstance(after_date, datetime):
+        after_date = datetime.combine(after_date, datetime.min.time())
+
     year = after_date.year
     month = after_date.month
 
@@ -49,7 +52,6 @@ def get_next_2nd_or_4th_monday(after_date):
             if meeting > after_date:
                 return meeting
 
-        # Move to next month
         month += 1
         if month > 12:
             month = 1

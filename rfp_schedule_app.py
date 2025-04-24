@@ -13,7 +13,7 @@ st.set_page_config(page_title="Howey RFP Calendar Generator", layout="centered")
 # --- BRANDING AND HEADING ---
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Generator</h2>", unsafe_allow_html=True)
-st.write("This tool generates an RFP schedule, skipping holidays and non-working days. It will also pull live Town Council meeting dates.")
+st.write("This tool will generate an RFP schedule, excluding non-working days and holidays.")
 
 # --- STEP 1 USER INPUT ---
 st.markdown("### Step 1: Enter the date the RFP was posted.")
@@ -84,7 +84,7 @@ if rfp_posted_date:
         adjustments[event] = adjusted
 
     # --- STEP 2 COUNCIL MEETING AFTER NEGOTIATION ---
-    st.markdown("### Step 2: Locate the next Town Council meeting")
+    st.markdown("### Step 2: Locate the Next Town Council meeting")
     meetings = fetch_town_council_meetings()
     negotiation_date = schedule["Contract Negotiated with the Town"]
 

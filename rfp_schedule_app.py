@@ -1,70 +1,69 @@
-# --- LIBRARIES ---
+# ---- LIBRARIES ----
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
+from calendar import monthcalendar, MONDAY
 import holidays
-import requests
-from bs4 import BeautifulSoup
-from dateutil import parser
 
-# --- PAGE CONFIG ---
-st.set_page_config(page_title="Howey RFP Calendar Generator", layout="centered")
-st.markdown("<div style='text-align: center'><img src='Howey-in-the-Hills LOGO.png' width='150'></div>", unsafe_allow_html=True)
+# ---- PAGE SETUP ----
+st.set_page_config(page_title="RFP Calendar Generator", layout="centered")
 
-# --- BRANDING AND HEADING ---
+# ---- HEADER AND BRANDING ----
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Generator</h2>", unsafe_allow_html=True)
-st.write("This tool will generate an RFP schedule, excluding non-working days and holidays.")
+st.markdown("<h2 style='text-align: center; color: #004d7a;'>Public Works – RFP Schedule Generator</h2>", unsafe_allow_html=True)
+st.write("This tool generates an RFP schedule, skipping holidays and weekends, and includes the next Town Council meeting.")
 
-# --- STEP 1 USER INPUT ---
-st.markdown("### Step 1: Enter the date the RFP was posted.")
+# ---- STEP 1: RFP DATE INPUT ----
+st.markdown("### Step 1: Enter the RFP Posted Date")
 rfp_posted_date = st.date_input("RFP Posted Date")
 
+# ---- HOLIDAY SETUP ----
 if rfp_posted_date:
     us_holidays = holidays.US(years=rfp_posted_date.year)
 else:
     us_holidays = set()
 
-# --- BUSINESS DAY FUNCTION ---
+# ---- FUNCTION: NEXT VALID BUSINESS DAY ----
 def next_valid_business_day(date, holiday_list):
     adjusted = False
-    while date.weekday() >= 4 or date in holiday_list:  # Skip Friday (4), Saturday (5), Sunday (6), and holidays
+    while date.weekday() >= 4 or date in holiday_list:
         date += timedelta(days=1)
         adjusted = True
     return date, adjusted
 
-# --- FUNCTION TO SCRAPE TC MEETINGS ---
-def fetch_town_council_meetings():
-    try:
-        url = "https://www.howey.org/meetings?field_microsite_tid_1=31"
-        response = requests.get(url, timeout=10)
-        if response.status_code != 200:
-            st.error("Unable to connect to the Town's meeting calendar.")
-            return []
+# ---- FUNCTION: GET 2ND AND 4TH MONDAYS ----
+def get_recurring_mondays(start_date, months=12):
+    """
+    Returns a list of 2nd and 4th Mondays for each month, starting after the given date.
+    """
+    results = []
+    year = start_date.year
+    month = start_date.month
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        rows = soup.find_all("tr", class_=["even", "odd"])
+    for _ in range(months):
+        cal = monthcalendar(year, month)
+        mondays = [week[MONDAY] for week in cal if week[MONDAY] != 0]
 
-        meetings = []
-        for row in rows:
-            if "Town Council" in row.get_text():
-                link = row.find("a")
-                if link and "title" in link.attrs:
-                    try:
-                        dt = parser.parse(link["title"])
-                        if dt > datetime.now():
-                            meetings.append(dt)
-                    except:
-                        continue
+        if len(mondays) >= 4:
+            second_monday = datetime(year, month, mondays[1])
+            fourth_monday = datetime(year, month, mondays[3])
+            if second_monday > start_date:
+                results.append(second_monday)
+            if fourth_monday > start_date:
+                results.append(fourth_monday)
 
-        return sorted(meetings)
+        # Move to next month
+        if month == 12:
+            month = 1
+            year += 1
+        else:
+            month += 1
 
-    except Exception as e:
-        st.error(f"Error retrieving council meetings: {e}")
-        return []
+    return results
 
-# --- MAIN SCHEDULE LOGIC ---
+# ---- MAIN LOGIC ----
 if rfp_posted_date:
+    # Define RFP event schedule
     events = {
         "RFP Posted on Town Website": 0,
         "Questions Due to the Town": 7,
@@ -72,22 +71,24 @@ if rfp_posted_date:
         "Proposal Packages Due to the Town": 16,
         "Proposal Packages Opened and Evaluated": 16,
         "Notice to Award Contract Posted on Town Website": 20,
-        "Contract Negotiated with the Town": 23,
+        "Contract Negotiated with Town": 23,
     }
 
     schedule = {}
     adjustments = {}
 
+    # Calculate each event's date
     for event, offset in events.items():
         raw_date = rfp_posted_date + timedelta(days=offset)
         final_date, adjusted = next_valid_business_day(raw_date, us_holidays)
         schedule[event] = final_date
         adjustments[event] = adjusted
 
-    # --- STEP 2 COUNCIL MEETING AFTER NEGOTIATION ---
-    st.markdown("### Step 2: Locate the Next Town Council meeting")
-    meetings = fetch_town_council_meetings()
-    negotiation_date = schedule["Contract Negotiated with the Town"]
+    # ---- COUNCIL MEETING SELECTION ----
+    st.markdown("### Step 2: Locate the Next Town Council Meeting")
+
+    negotiation_date = schedule["Contract Negotiated with Town"]
+    meetings = get_recurring_mondays(start_date=negotiation_date)
 
     if meetings:
         next_meeting = next((m for m in meetings if m > negotiation_date), None)
@@ -96,22 +97,22 @@ if rfp_posted_date:
             schedule["Town Council Approval of Contract"] = council_final
             adjustments["Town Council Approval of Contract"] = council_adjusted
         else:
-            st.warning("No upcoming Town Council meetings found after the negotiation date.")
-            schedule["Town Council Approval of Contract"] = "Unavailable"
+            st.warning("No Town Council meeting found after contract negotiation.")
+            schedule["Town Council Approval of Contract"] = "Not found"
             adjustments["Town Council Approval of Contract"] = False
     else:
-        st.warning("Unable to retrieve upcoming Town Council meetings.")
+        st.warning("Could not generate Town Council meeting dates.")
         schedule["Town Council Approval of Contract"] = "Unavailable"
         adjustments["Town Council Approval of Contract"] = False
 
-    # --- STEP 3 OUTPUT FINAL SCHEDULE ---
+    # ---- DISPLAY FINAL SCHEDULE ----
     st.markdown("### Step 3: Review and Export the Schedule")
 
     df = pd.DataFrame([
         {
             "Event": event,
             "Date": date.strftime('%B %d, %Y') if isinstance(date, datetime) else date,
-            "Note": "Adjusted for holidays and weekends" if adjustments[event] else ""
+            "Note": "Adjusted for holiday/weekend" if adjustments[event] else ""
         }
         for event, date in schedule.items()
     ])
@@ -119,6 +120,7 @@ if rfp_posted_date:
     st.success("RFP schedule generated successfully.")
     st.table(df)
 
+    # ---- DOWNLOAD BUTTON ----
     csv = df.to_csv(index=False)
     st.download_button(
         label="Download Schedule as CSV",
@@ -126,3 +128,6 @@ if rfp_posted_date:
         file_name="rfp_schedule.csv",
         mime="text/csv"
     )
+
+else:
+    st.info("Please select the RFP Posted Date above to begin.")

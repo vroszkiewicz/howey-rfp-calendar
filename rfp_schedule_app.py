@@ -24,19 +24,22 @@ calendar_length = st.radio(
     )
 
 # ---- STEP 2: INPUT DATE ----
-st.markdown("### Step 2: Select the date the RFP was posted")
-rfp_posted_date = st.date_input("RFP Posted Date")
+st.markdown("### Step 2: Select the date the RFP will be posted.")
 
-# Prevent selecting Fridays (weekday 4 = Friday)
-if rfp_posted_date and rfp_posted_date.weekday() == 4:
-    st.error("RFPs cannot be posted on Fridays. Please select a Monday through Thursday.")
-    st.stop()
+rfp_posted_date = st.date_input("Select a  date")
 
-# ---- HOLIDAYS ----
+# Retrieve U.S. holidays for the year of the selected date
+us_holidays = holidays.US(years=rfp_posted_date.year) if rfp_posted_date else set()
+
+# Block Fridays, Saturdays, Sundays, and federal holidays
 if rfp_posted_date:
-    us_holidays = holidays.US(years=rfp_posted_date.year)
-else:
-    us_holidays = set()
+    if rfp_posted_date.weekday() in [4, 5, 6]:
+        st.error("RFPs cannot be posted on Fridays, Saturdays, or Sundays."_
+                 st.stop()
+        elif rfp_posted_date in us_holidays:
+            st.error("RFPs cannot be posted on holidays.")
+            st.stop()
+
 
 # ---- BUSINESS DAY ADJUSTER ----
 def next_valid_business_day(date, holiday_list):

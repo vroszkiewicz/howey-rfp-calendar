@@ -18,6 +18,11 @@ st.write("Enter the date the RFP was posted. The schedule will be generated for 
 st.markdown("### Step 1: Select the date the RFP was posted")
 rfp_posted_date = st.date_input("RFP Posted Date")
 
+# Prevent selecting Fridays (weekday 4 = Friday)
+if rfp_posted_date and rfp_posted_date.weekday() == 4:
+    st.error("RFPs cannot be posted on Fridays. Please select a Monday through Thursday.")
+    st.stop()
+
 # ---- HOLIDAYS ----
 if rfp_posted_date:
     us_holidays = holidays.US(years=rfp_posted_date.year)

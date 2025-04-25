@@ -58,21 +58,20 @@ if rfp_posted_date:
     schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
     adjustments["Town Council Approval of Contract"] = False
 
-    # --- STEP 2: SCHEDULE SUMMARY ----
-st.markdown("### Step 2: Schedule Summary")
+    # ---- STEP 2: OUTPUT TABLE ----
+    st.markdown("### Step 2: Schedule Summary")
 
-df = pd.DataFrame([
-    {
-        "Event": event,
-        "Date": date.strftime('%B %d, %Y') if isinstance(date, datetime) else date,
-        "Note": "Adjusted for holiday or non-working day" if adjustments[event] else ""
-    }
-    for event, date in schedule.items()
-])
+    df = pd.DataFrame([
+        {
+            "Event": event,
+            "Date": date.strftime('%B %d, %Y') if isinstance(date, datetime) else date,
+            "Note": "Adjusted for holiday or non-working day" if adjustments[event] else ""
+        }
+        for event, date in schedule.items()
+    ])
 
-st.success("Your RFP calendar is ready for download.")
-st.dataframe(df, use_container_width=True)
-
+    st.success("Your RFP calendar is ready for download.")
+    st.table(df)
 
     # ---- DOWNLOAD BUTTON ----
     csv = df.to_csv(index=False)

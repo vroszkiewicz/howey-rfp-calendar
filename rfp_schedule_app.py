@@ -9,7 +9,7 @@ st.set_page_config(page_title="RFP Schedule Generator", layout="centered")
 # ---- BRANDING ----
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Generator</h2>", unsafe_allow_html=True)
-st.write("Enter the date your RFP was posted. We’ll calculate all key dates into one downloadable file.")
+st.write("Enter the date your RFP was posted. All key dates will be calculated into one downloadable file.")
 
 # ---- STEP 1: SELECT CALENDAR LENGTH ----
 st.markdown("### Step 1: Select the length of the calendar")

@@ -15,7 +15,7 @@ st.write("This tool generates an RFP schedule, skipping holidays and weekends. T
 # ---- LOGO ----
 st.image("howey_logo.png", width=150) 
 st.markdown(
-    "<div style='text-align: center'><img src='howey_logo.png" width='150'><div>",
+    "<div style='text-align: center'><img src='howey_logo.png" width='150'></div>",
     unsafe_allow_html=True
 )
 

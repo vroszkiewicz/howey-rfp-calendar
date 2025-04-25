@@ -12,7 +12,7 @@ st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Genera
 st.write("Enter the date your RFP was posted. We’ll calculate all key dates into one downloadable file.")
 
 # ---- STEP 1: SELECT CALENDAR LENGTH ----
-st.markdown("### Step 1: Select the length of the calendar.")
+st.markdown("### Step 1: Select the length of the calendar")
 
 calendar_length = st.radio(
     "How long will this RFP be open?",
@@ -22,7 +22,7 @@ calendar_length = st.radio(
 )
 
 # ---- STEP 2: SELECT RFP POSTED DATE ----
-st.markdown("### Step 2: Select the date the RFP was posted.")
+st.markdown("### Step 2: Select the date the RFP was posted")
 
 rfp_posted_date = st.date_input("Select a date")
 

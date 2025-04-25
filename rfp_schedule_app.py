@@ -14,7 +14,16 @@ st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Genera
 # ---- DESCRIPTION ---
 st.write("Enter the date the RFP was posted. The schedule will be generated for you.")
 
-# ---- STEP 1: INPUT DATE ----
+# ---- STEP 1: SELECT CALENDAR LENGTH ----
+st.markdown("### 1. Select calendar length.")
+calendar_length = st.radio(
+    "How long will this RFP be open?",
+    options=["2 weeks", "4 weeks"],
+    index=0
+    horizontal=True
+    )
+
+# ---- STEP 2: INPUT DATE ----
 st.markdown("### Step 1: Select the date the RFP was posted")
 rfp_posted_date = st.date_input("RFP Posted Date")
 
@@ -63,7 +72,7 @@ if rfp_posted_date:
     schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
     adjustments["Town Council Approval of Contract"] = False
 
-    # ---- STEP 2: OUTPUT TABLE ----
+    # ---- STEP 3: OUTPUT TABLE ----
     st.markdown("### Step 2: Schedule Summary")
 
     df = pd.DataFrame([

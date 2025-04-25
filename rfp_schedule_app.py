@@ -13,7 +13,7 @@ st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Genera
 st.write("This tool generates an RFP schedule, skipping holidays and weekends. The Town Council meeting date must be verified manually.")
 
 # ---- LOGO ----
-st.image("howey_logo.png", wdith=150) 
+st.image("howey_logo.png", width=150) 
 st.markdown(
     "<div style='text-align: center'><img src='howey_logo.png" width='150'><div>",
     unsafe_allow_html=True

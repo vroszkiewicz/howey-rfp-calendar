@@ -25,7 +25,7 @@ calendar_length = st.radio(
 
 # ---- STEP 2: RFP POSTED DATE ----
 
-st.markdown("### 2. Select the RFP Posted Date")
+st.markdown("### 2. Select the date the RFP was posted.")
 
 
 
@@ -90,7 +90,7 @@ if rfp_posted_date:
     adjustments["Town Council Approval of Contract"] = False
 
     # ---- STEP 3: OUTPUT TABLE ----
-    st.markdown("### Step 3: Schedule Summary")
+    st.markdown("### Step 3: Download your RFP schedule.")
 
     df = pd.DataFrame([
         {

@@ -34,7 +34,7 @@ us_holidays = holidays.US(years=rfp_posted_date.year) if rfp_posted_date else se
 # Block Fridays, Saturdays, Sundays, and federal holidays
 if rfp_posted_date:
     if rfp_posted_date.weekday() in [4, 5, 6]:
-        st.error("RFPs cannot be posted on Fridays, Saturdays, or Sundays."_
+        st.error("RFPs cannot be posted on Fridays, Saturdays, or Sundays.")
                  st.stop()
         elif rfp_posted_date in us_holidays:
             st.error("RFPs cannot be posted on holidays.")

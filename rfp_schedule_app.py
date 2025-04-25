@@ -19,7 +19,7 @@ st.markdown("### 1. Select calendar length.")
 calendar_length = st.radio(
     "How long will this RFP be open?",
     options=["2 weeks", "4 weeks"],
-    index=0
+    index=0,
     horizontal=True
     )
 

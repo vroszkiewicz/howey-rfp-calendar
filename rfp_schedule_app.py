@@ -38,7 +38,7 @@ if rfp_posted_date:
                  st.stop()
     elif rfp_posted_date in us_holidays:
         st.error("RFPs cannot be posted on holidays.")
-        st.stop()
+                 st.stop()
 
 # ---- BUSINESS DAY ADJUSTER ----
 def next_valid_business_day(date, holiday_list):

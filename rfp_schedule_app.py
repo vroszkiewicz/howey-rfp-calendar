@@ -59,7 +59,7 @@ if rfp_posted_date:
     adjustments["Town Council Approval of Contract"] = False
 
     # ---- STEP 2: OUTPUT TABLE ----
-    st.markdown("### Step 3: Schedule Summary")
+    st.markdown("### Step 2: Schedule Summary")
 
     df = pd.DataFrame([
         {

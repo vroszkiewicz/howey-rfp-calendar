@@ -11,18 +11,11 @@ st.set_page_config(page_title="RFP Calendar Generator", layout="centered")
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Generator</h2>", unsafe_allow_html=True)
 
-# ---- LOGO ----
-st.image("howey_logo.png", width=150) 
-st.markdown(
-    "<div style='text-align: center'><img src='howey_logo.png' width='150'></div>",
-    unsafe_allow_html=True
-)
-
 # ---- DESCRIPTION ---
-st.write("This tool generates an RFP schedule, skipping holidays and weekends. The Town Council meeting date must be verified manually.")
+st.write("Enter the date the RFP was posted. The schedule will be generated for you.")
 
 # ---- STEP 1: INPUT DATE ----
-st.markdown("### Step 1: Enter the RFP Posted Date")
+st.markdown("### Step 1: Select the date the RFP was posted")
 rfp_posted_date = st.date_input("RFP Posted Date")
 
 # ---- HOLIDAYS ----
@@ -61,14 +54,12 @@ if rfp_posted_date:
         schedule[event] = final_date
         adjustments[event] = adjusted
 
-    # ---- STEP 2: TOWN COUNCIL MANUAL PLACEHOLDER ----
-    st.markdown("### Step 2: Confirm Town Council Meeting Manually")
 
     schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
     adjustments["Town Council Approval of Contract"] = False
 
-    # ---- STEP 3: OUTPUT TABLE ----
-    st.markdown("### Step 3: Review and Export the Schedule")
+    # ---- STEP 2: OUTPUT TABLE ----
+    st.markdown("### Step 3: Schedule Summary")
 
     df = pd.DataFrame([
         {
@@ -79,7 +70,7 @@ if rfp_posted_date:
         for event, date in schedule.items()
     ])
 
-    st.success("RFP schedule generated successfully.")
+    st.success("Your RFP calendar is ready for download.")
     st.table(df)
 
     # ---- DOWNLOAD BUTTON ----

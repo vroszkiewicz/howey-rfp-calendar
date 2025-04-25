@@ -65,7 +65,7 @@ if rfp_posted_date:
         {
             "Event": event,
             "Date": date.strftime('%B %d, %Y') if isinstance(date, datetime) else date,
-            "Note": "Adjusted for holiday/weekend" if adjustments[event] else ""
+            "Note": "Adjusted for holiday or non-working day" if adjustments[event] else ""
         }
         for event, date in schedule.items()
     ])

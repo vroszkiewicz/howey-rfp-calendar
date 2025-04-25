@@ -10,10 +10,10 @@ st.set_page_config(page_title="RFP Schedule Generator", layout="centered")
 st.markdown("<div style='text-align: center'><img src='howey_logo.png' width='150'></div>", unsafe_allow_html=True)
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Generator</h2>", unsafe_allow_html=True)
-st.write("Enter your RFP timeline below. We’ll calculate all key dates and skip holidays and weekends.")
+st.write("Enter the date your RFP was posted. We’ll calculate all key dates into one downloadable file.")
 
 # ---- STEP 1: SELECT CALENDAR LENGTH ----
-st.markdown("### 1. Select Calendar Length")
+st.markdown("### Step 1: Select the length of the calendar.")
 
 calendar_length = st.radio(
     "How long will this RFP be open?",
@@ -23,7 +23,7 @@ calendar_length = st.radio(
 )
 
 # ---- STEP 2: SELECT RFP POSTED DATE ----
-st.markdown("### 2. Select the RFP Posted Date")
+st.markdown("### Step 2: Select the date the RFP was posted.")
 
 rfp_posted_date = st.date_input("Select a date")
 
@@ -36,7 +36,7 @@ if rfp_posted_date:
         st.error("RFPs cannot be posted on Fridays, Saturdays, or Sundays.")
         st.stop()
     elif rfp_posted_date in us_holidays:
-        st.error("RFPs cannot be posted on federal holidays.")
+        st.error("RFPs cannot be posted on holidays.")
         st.stop()
 
 # ---- BUSINESS DAY FUNCTIONS ----
@@ -96,14 +96,14 @@ if rfp_posted_date:
         adjustments[event] = adjusted
 
     # ---- MANUAL TOWN COUNCIL APPROVAL ----
-    st.markdown("### 3. Town Council Approval")
+    st.markdown("### Step 3: Approval by Town Council")
     st.write("Add the next Town Council meeting manually when finalizing the schedule.")
 
     schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
     adjustments["Town Council Approval of Contract"] = False
 
     # ---- STEP 4: OUTPUT THE TABLE ----
-    st.markdown("### 4. View and Download the Schedule")
+    st.markdown("### Step 4: View and download your schedule")
 
     df = pd.DataFrame([
         {
@@ -114,7 +114,7 @@ if rfp_posted_date:
         for event, date in schedule.items()
     ])
 
-    st.success("RFP schedule generated successfully.")
+    st.success("RFP schedule generated successfully!")
     st.table(df)
 
     csv = df.to_csv(index=False)

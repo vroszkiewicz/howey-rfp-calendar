@@ -10,10 +10,16 @@ st.set_page_config(page_title="RFP Calendar Generator", layout="centered")
 # ---- HEADER / BRANDING ----
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Generator</h2>", unsafe_allow_html=True)
-st.write("This tool generates an RFP schedule, skipping holidays and weekends. The Town Council meeting date must be verified manually.")
 
 # ---- LOGO ----
 st.image("howey_logo.png", width=150) 
+st.markdown(
+    "<div style='text-align: center'><img src='howey_logo.png' width='150'></div>",
+    unsafe_allow_html=True
+)
+
+# ---- DESCRIPTION ---
+st.write("This tool generates an RFP schedule, skipping holidays and weekends. The Town Council meeting date must be verified manually.")
 
 # ---- STEP 1: INPUT DATE ----
 st.markdown("### Step 1: Enter the RFP Posted Date")

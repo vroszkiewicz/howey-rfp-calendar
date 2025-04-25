@@ -105,6 +105,7 @@ if rfp_posted_date:
     if fourth_monday and fourth_monday > rfp_posted_date:
         valid_options.append(("Fourth Monday", fourth_monday))
 
+ def choose_closest_valid_option(valid_options, rfp_posted_date):
     # Return the closest valid option
     if valid_options:
         return min(valid_options, key=lambda x: (x[1] - rfp_posted_date).days)

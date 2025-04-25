@@ -80,19 +80,36 @@ if rfp_posted_date:
         adjustments[event] = adjusted
 
     # ---- STEP 2: DETERMINE NEXT COUNCIL MEETING ----
-    st.markdown("### Step 2: Locate the Next Town Council Meeting")
+    from datetime import datetime
+    from calendar import monthcalendar, MONDAY
 
-    negotiation_date = schedule["Contract Negotiated with Town"]
-    next_meeting = get_next_2nd_or_4th_monday(negotiation_date)
+    def get_closest_2nd_or_4th_monday(rfp_posted_date):
+        # Determines the closest valid council meeting date (2nd or 4th Monday) after the given RFP posted date.
+        # Returns (1) a label of "Second Monday" or "Fourth Monday"; (2) datetime object of the selected Monday
 
-    if next_meeting:
-        council_final, council_adjusted = next_valid_business_day(next_meeting, us_holidays)
-        schedule["Town Council Approval of Contract"] = council_final
-        adjustments["Town Council Approval of Contract"] = council_adjusted
+        year = rfp_posted_date.year
+        month = rfp_posted_date.month
+        cal = monthcalendar(year, month)
+
+    # Get all Mondays in the month
+    mondays = [week[MONDAY] for week in cal if week[MONDAY] != 0]
+
+    # Grad 2nd and 4th Monday if they exist
+    second_monday = datetime(year, month, mondays[1]) if len(mondays) >= 2 else None
+    fourth_monday = datetime(year, month, mondays[3]) if len(mondays) >= 4 else None
+
+     # Store options that are after RFP date
+    valid_options = []
+    if second_monday and second_monday > rfp_posted_date:
+        valid_options.append(("Second Monday", second_monday))
+    if fourth_monday and fourth_monday > rfp_posted_date:
+        valid_options.append(("Fourth Monday", fourth_monday))
+
+    # Return the closest valid option
+    if valid_options:
+        return min(valid_options, key=lambda x: (x[1] - rfp_posted_date).days)
     else:
-        st.warning("Could not find a valid council meeting date.")
-        schedule["Town Council Approval of Contract"] = "Unavailable"
-        adjustments["Town Council Approval of Contract"] = False
+        return None, None
 
     # ---- STEP 3: SHOW FINAL SCHEDULE ----
     st.markdown("### Step 3: Review and Export the Schedule")

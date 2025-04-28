@@ -7,7 +7,7 @@ import holidays
 st.set_page_config(page_title="RFP Schedule Generator", layout="centered")
 
 # ---- BRANDING ----
-col1, col2, col13 = st.columns([1, 2, 1])
+col1, col2, col3 = st.columns(3)
 with col2:
     st.image("howey_logo.png", width=150)
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)

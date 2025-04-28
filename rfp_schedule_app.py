@@ -7,7 +7,10 @@ import holidays
 st.set_page_config(page_title="RFP Schedule Generator", layout="centered")
 
 # ---- BRANDING ----
-st.image("howey_logo.png", width=150)
+st.markdown(
+    "<h1 style='text-align: center;'><img src='howey_logo.png' width=150><div/>",
+    unsafe_allow_html=True
+)
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Generator</h2>", unsafe_allow_html=True)
 st.write("Enter the date your RFP was posted. All key dates will be calculated into one downloadable file.")

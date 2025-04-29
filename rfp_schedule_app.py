@@ -104,6 +104,15 @@ if rfp_posted_date:
     schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
     adjustments["Town Council Approval of Contract"] = False
 
+    today = datetime.today().date()
+
+    days_remaining = {}
+    for event, date in schedule.items():
+        if isinstance (date, datetime):
+            days_remaining[event] = (date.date() - today).days
+        else:
+            days_remaining[event] = "" # for manually entered text like TC meeting
+    
     # ---- STEP 4: OUTPUT THE TABLE ----
     st.markdown("### Step 4: View and download your schedule")
 

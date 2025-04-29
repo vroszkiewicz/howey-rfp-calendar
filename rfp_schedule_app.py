@@ -112,6 +112,7 @@ if rfp_posted_date:
             days_remaining[event] = (date.date() - today).days
         else:
             days_remaining[event] = "" # for manually entered text like TC meeting
+
     
     # ---- STEP 4: OUTPUT THE TABLE ----
     st.markdown("### Step 4: View and download your schedule")
@@ -120,11 +121,23 @@ if rfp_posted_date:
         {
             "Event": event,
             "Date": date.strftime('%B %d, %Y') if isinstance(date, datetime) else date,
+            "Days Left": days_remaining[event],
+            "Adj": "Adjusted" if adjustments[event] else ""
         }
         for event, date in schedule.items()
     ])
 
     st.success("RFP schedule generated successfully!")
+
+    def highlight_due(val):
+        if isinstance(val, int):
+            if val <= 3:
+                return 'background-color: #ffcccc' # light red
+            elif val <= 7:
+                return 'background-color: #fff4cc' # light yellow
+        return ''
+    styled_df = df.style.applymap(highlight_due, subset=["Days Left"])
+    
     st.table(df)
 
     csv = df.to_csv(index=False)

@@ -113,6 +113,8 @@ if rfp_posted_date:
         else:
             days_remaining[event] = "" # for manually entered text like TC meeting
 
+    st.dataframe(styled_df, use_container_width=True)
+
     
     # ---- STEP 4: OUTPUT THE TABLE ----
     st.markdown("### Step 4: View and download your schedule")

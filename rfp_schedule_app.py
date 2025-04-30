@@ -82,9 +82,11 @@ if rfp_posted_date:
     for event, raw_date in events.items():
         final_date, adjusted = next_valid_business_day(raw_date, us_holidays)
         schedule[event] = final_date
-        adjustments[event] = adjusted
-        days_remaining[event] = (final_date.date() - today).days
-
+        if isinstance(final_date, datetime):
+            days_remaining[event] = (final_date.date() - today).days
+        else:
+            days_remaining[event] = ""
+        
     # ---- MANUAL TOWN COUNCIL APPROVAL ----
     st.markdown("### 3. Town Council Approval")
     st.write("Add the next Town Council meeting manually when finalizing the schedule.")

@@ -102,7 +102,7 @@ if rfp_posted_date:
         {
             "Event": event,
             "Date": date.strftime('%B %d, %Y') if isinstance (date, datetime) else date,
-            "Days Left": (date - today).days if isinstance(date, (datetime, date)) else ""
+            "Days Left": (date - today).days if isinstance(event_date, (datetime, date)) else ""
         }
         for event, date in schedule.items()
     ])

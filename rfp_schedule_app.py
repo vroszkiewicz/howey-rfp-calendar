@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
+from datetime import date
 import holidays
 
 # ---- PAGE CONFIG ----
@@ -98,13 +99,15 @@ if rfp_posted_date:
     # ---- FINAL SCHEDULE TABLE ----
     st.markdown("### 4. View and Download the Schedule")
 
+    today = date.today()
+
     df = pd.DataFrame([
         {
             "Event": event,
-            "Date": date.strftime('%B %d, %Y') if isinstance (date, datetime) else date,
-            "Days Left": (date - today).days if isinstance(event_date, (datetime, date)) else ""
+            "Date": event_date.strftime('%B %d, %Y') if isinstance(event_date, (datetime, date)) else event_date,
+            "Days Left": (event_date - today).days if isinstance(event_date, (datetime, data)) else ""
         }
-        for event, date in schedule.items()
+        for event, event_date in schedule.items()
     ])
 
     # ---- DISPLAY TABLE ----

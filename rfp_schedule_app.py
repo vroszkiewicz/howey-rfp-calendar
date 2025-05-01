@@ -106,20 +106,6 @@ if rfp_posted_date:
         }
         for event, date in schedule.items()
     ])
-
-    def highlight_due(val):
-        if isinstance(val, int):
-            if val <= 3:
-                return 'background-color: #ffcccc'
-            elif val <= 7:
-                return 'background-color: #fff4cc'
-        return ''
-
-    styled_df = df.style.applymap(highlight_due, subset=["Days Left"])
-
-    # ---- RENDER STYLED TABLE ----
-    st.markdown(styled_df.to_html(escape=False), unsafe_allow_html=True)
-
     
     # ---- CSV DOWNLOAD ----
     csv = df.to_csv(index=False)

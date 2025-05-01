@@ -104,8 +104,16 @@ if rfp_posted_date:
     df = pd.DataFrame([
         {
             "Event": event,
-            "Date": event_date.strftime('%B %d, %Y') if isinstance(event_date, (datetime, date)) else event_date,
-            "Days Left": (event_date - today).days if isinstance(event_date, (datetime, data)) else ""
+            "Date": (
+                event_date.strftime('%B %d, %Y')
+                if isinstance (event_date, (datetime, date))
+                else event_date
+            ),
+            "Days Left": (
+                (event_date - today).days
+                if isinstance(event_date, (datetime, date))
+                else ""
+            )
         }
         for event, event_date in schedule.items()
     ])

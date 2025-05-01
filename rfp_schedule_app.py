@@ -117,8 +117,11 @@ if rfp_posted_date:
 
     styled_df = df.style.applymap(highlight_due, subset=["Days Left"])
 
-    st.table(styled_df)
+    # ---- RENDER STYLED TABLE ----
+    st.markdown(styled_df.to_html(escape=False), unsafe_allow_html=True)
 
+    
+    # ---- CSV DOWNLOAD ----
     csv = df.to_csv(index=False)
     st.download_button(
         label="Download Schedule as CSV",

@@ -106,6 +106,9 @@ if rfp_posted_date:
         }
         for event, date in schedule.items()
     ])
+
+    # ---- DISPLAY TABLE ----
+    st.dataframe(df, use_container_width=True)
     
     # ---- CSV DOWNLOAD ----
     csv = df.to_csv(index=False)

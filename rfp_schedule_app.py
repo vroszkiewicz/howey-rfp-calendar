@@ -87,17 +87,6 @@ if rfp_posted_date:
             days_remaining[event] = (final_date.date() - today).days
         else:
             days_remaining[event] = ""
-        
-    # ---- MANUAL TOWN COUNCIL APPROVAL ----
-    st.markdown("### 3. Town Council Approval")
-    st.write("Add the next Town Council meeting manually when finalizing the schedule.")
-
-    schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
-    adjustments["Town Council Approval of Contract"] = False
-    days_remaining["Town Council Approval of Contract"] = ""
-
-    # ---- FINAL SCHEDULE TABLE ----
-    st.markdown("### 4. View and Download the Schedule")
 
     from datetime import datetime, date
 
@@ -112,13 +101,27 @@ if rfp_posted_date:
                 else event_date
             ),
             "Days Left": (
-                "Due Today" if (event_date == today) else
-                "Overdue" if (event_date < today) else
-                f"{(event_date - today).days} days"
+                "Due Today" if event_date == today else
+                f"Overdue by {(today - event_date).days} days" if event_date < today else
+                f"{(event_date - today).days} days left"
             ) if isinstance(event_date, (datetime, date)) else ""
         }
         for event, event_date in schedule.items()
     ])
+    
+    # ---- MANUAL TOWN COUNCIL APPROVAL ----
+    st.markdown("### 3. Town Council Approval")
+    st.write("Add the next Town Council meeting manually when finalizing the schedule.")
+
+    schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
+    adjustments["Town Council Approval of Contract"] = False
+    days_remaining["Town Council Approval of Contract"] = ""
+
+    # ---- FINAL SCHEDULE TABLE ----
+    st.markdown("### 4. View and Download the Schedule")
+
+    
+            
 
     # ---- DISPLAY TABLE ----
     st.dataframe(df, use_container_width=True)

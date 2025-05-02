@@ -149,3 +149,20 @@ if rfp_posted_date:
 
 else:
     st.info("Please select the RFP Posted Date to begin.")
+
+# ---- EXPORT .ICS CALENDAR FILE FOR OUTLOOK ----
+cal = Calendar()
+
+for row in df.itertuples():
+    if isinstance(row.Date, str) and "20" in row.Date:
+        try:
+            dt = datetime.strptime(row.Date, "%B %d, %Y")
+        except:
+            continue
+        e = ICSEvent()
+        e.name = f"{row.Event} - {project_title}"
+        e.begin = dt.strftime(%Y-%m-%d")
+        e.make_all_day()
+        e.description = f"{department} | {project_title}"
+        cal.events.add(e)
+ics_file = cal

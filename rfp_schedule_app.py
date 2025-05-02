@@ -25,8 +25,17 @@ calendar_length = st.radio(
     horizontal=True
 )
 
+st.markdown("### Step Two: Add Project Details")
+
+project_title = st.text_input("Enter Project Title")
+
+department = st.selectbox(
+    "Select Department",
+    ["Public Works", "Parks and Recreation", "Finance", "Administration", "Planning and Zoning"]
+)
+
 # ---- STEP 2: SELECT RFP POSTED DATE ----
-st.markdown("### Step Two: Select the RFP Posted Date")
+st.markdown("### Step Three: Select the RFP Posted Date")
 
 rfp_posted_date = st.date_input("Select a date")
 
@@ -83,17 +92,19 @@ if rfp_posted_date:
         adjustments[event] = adjusted
 
     # ---- MANUAL TOWN COUNCIL APPROVAL ----
-    st.markdown("### Step Three: Town Council Approval")
+    st.markdown("### Step Four: Town Council Approval")
     st.write("Add the next Town Council meeting manually when finalizing the schedule.")
 
     schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
     adjustments["Town Council Approval of Contract"] = False
 
     # ---- BUILD FINAL TABLE ----
-    st.markdown("### Step Four: View and Download the Schedule")
+    st.markdown("### Step Five: View and Download the Schedule")
 
     df = pd.DataFrame([
         {
+            "Project": project_title,
+            "Department": department,
             "Event": event,
             "Date": (
                 event_date.strftime('%B %d, %Y')
@@ -101,9 +112,10 @@ if rfp_posted_date:
             ),
             "Days Left": (
                 "Due Today" if event_date == today else
+                f"Overdue by {(today - event_date).days} day" if (event_date < today and (today - event_date).days == 1) else
                 f"Overdue by {(today - event_date).days} days" if event_date < today else
                 f"{(event_date - today).days} days left"
-            ) if isinstance(event_date, (datetime, date)) else ""
+            ) if isinstance (event_date, (datetime, date)) else ""
         }
         for event, event_date in schedule.items()
     ])

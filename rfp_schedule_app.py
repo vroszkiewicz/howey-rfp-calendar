@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, timedelta
-from datetime import date
+from datetime import datetime, timedelta, date
 import holidays
 
 # ---- PAGE CONFIG ----
@@ -43,21 +42,21 @@ if rfp_posted_date:
         st.stop()
 
 # ---- BUSINESS DAY HELPERS ----
-def next_valid_business_day(date, holiday_list):
+def next_valid_business_day(date_value, holiday_list):
     adjusted = False
-    while date.weekday() >= 4 or date in holiday_list:
-        date += timedelta(days=1)
+    while date_value.weekday() >= 4 or date_value in holiday_list:
+        date_value += timedelta(days=1)
         adjusted = True
-    return date, adjusted
+    return date_value, adjusted
 
 def add_working_days(start_date, working_days_needed, holiday_list):
-    date = start_date
+    date_value = start_date
     days_added = 0
     while days_added < working_days_needed:
-        date += timedelta(days=1)
-        if date.weekday() < 4 and date not in holiday_list:
+        date_value += timedelta(days=1)
+        if date_value.weekday() < 4 and date_value not in holiday_list:
             days_added += 1
-    return date
+    return date_value
 
 # ---- MAIN LOGIC ----
 if rfp_posted_date:
@@ -76,29 +75,29 @@ if rfp_posted_date:
 
     schedule = {}
     adjustments = {}
-    days_remaining = {}
-
-    today = datetime.today().date()
+    today = date.today()
 
     for event, raw_date in events.items():
         final_date, adjusted = next_valid_business_day(raw_date, us_holidays)
         schedule[event] = final_date
-        if isinstance(final_date, datetime):
-            days_remaining[event] = (final_date.date() - today).days
-        else:
-            days_remaining[event] = ""
+        adjustments[event] = adjusted
 
-    from datetime import datetime, date
+    # ---- MANUAL TOWN COUNCIL APPROVAL ----
+    st.markdown("### 3. Town Council Approval")
+    st.write("Add the next Town Council meeting manually when finalizing the schedule.")
 
-    today = date.today()
+    schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
+    adjustments["Town Council Approval of Contract"] = False
+
+    # ---- BUILD FINAL TABLE ----
+    st.markdown("### 4. View and Download the Schedule")
 
     df = pd.DataFrame([
         {
             "Event": event,
             "Date": (
                 event_date.strftime('%B %d, %Y')
-                if isinstance(event_date, (datetime, date))
-                else event_date
+                if isinstance(event_date, (datetime, date)) else event_date
             ),
             "Days Left": (
                 "Due Today" if event_date == today else
@@ -108,48 +107,16 @@ if rfp_posted_date:
         }
         for event, event_date in schedule.items()
     ])
-    
-    # ---- MANUAL TOWN COUNCIL APPROVAL ----
-    st.markdown("### 3. Town Council Approval")
-    st.write("Add the next Town Council meeting manually when finalizing the schedule.")
 
-    schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
-    adjustments["Town Council Approval of Contract"] = False
-    days_remaining["Town Council Approval of Contract"] = ""
+    st.table(df)  # No index, all rows shown
 
-    from datetime import datetime, date
-
-today = date.today()
-
-# Create display table from your schedule dictionary
-df = pd.DataFrame([
-    {
-        "Event": event,
-        "Date": (
-            event_date.strftime('%B %d, %Y')
-            if isinstance(event_date, (datetime, date))
-            else event_date
-        ),
-        "Days Left": (
-            "Due Today" if event_date == today else
-            f"Overdue by {(today - event_date).days} days" if event_date < today else
-            f"{(event_date - today).days} days left"
-        ) if isinstance(event_date, (datetime, date)) else ""
-    }
-    for event, event_date in schedule.items()
-])
-
-# ---- Render final table without index numbers ----
-st.table(df)
-
-# ---- Optional CSV download ----
-csv = df.to_csv(index=False)
-st.download_button(
-    label="Download Schedule as CSV",
-    data=csv,
-    file_name="rfp_schedule.csv",
-    mime="text/csv"
-)
+    csv = df.to_csv(index=False)
+    st.download_button(
+        label="Download Schedule as CSV",
+        data=csv,
+        file_name="rfp_schedule.csv",
+        mime="text/csv"
+    )
 
 else:
     st.info("Please select the RFP Posted Date to begin.")

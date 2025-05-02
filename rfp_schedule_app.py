@@ -113,7 +113,7 @@ if rfp_posted_date:
             ),
             "Days Left": (
                 "Due Today" if (event_date == today) else
-                "**Overdue**" if (event_date < today) else
+                "Overdue" if (event_date < today) else
                 f"{(event_date - today).days} days"
             ) if isinstance(event_date, (datetime, date)) else ""
         }

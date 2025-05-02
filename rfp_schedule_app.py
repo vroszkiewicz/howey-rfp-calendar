@@ -124,7 +124,7 @@ if rfp_posted_date:
             
 
     # ---- DISPLAY TABLE ----
-    st.dataframe(df.set_index("Event"), use_container_width=True)
+    st.table(df)
     
     # ---- CSV DOWNLOAD ----
     csv = df.to_csv(index=False)

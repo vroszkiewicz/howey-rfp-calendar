@@ -117,23 +117,39 @@ if rfp_posted_date:
     adjustments["Town Council Approval of Contract"] = False
     days_remaining["Town Council Approval of Contract"] = ""
 
-    # ---- FINAL SCHEDULE TABLE ----
-    st.markdown("### 4. View and Download the Schedule")
+    from datetime import datetime, date
 
-    
-            
+today = date.today()
 
-    # ---- DISPLAY TABLE ----
-    st.table(df)
-    
-    # ---- CSV DOWNLOAD ----
-    csv = df.to_csv(index=False)
-    st.download_button(
-        label="Download Schedule as CSV",
-        data=csv,
-        file_name="rfp_schedule.csv",
-        mime="text/csv"
-    )
+# Create display table from your schedule dictionary
+df = pd.DataFrame([
+    {
+        "Event": event,
+        "Date": (
+            event_date.strftime('%B %d, %Y')
+            if isinstance(event_date, (datetime, date))
+            else event_date
+        ),
+        "Days Left": (
+            "Due Today" if event_date == today else
+            f"Overdue by {(today - event_date).days} days" if event_date < today else
+            f"{(event_date - today).days} days left"
+        ) if isinstance(event_date, (datetime, date)) else ""
+    }
+    for event, event_date in schedule.items()
+])
+
+# ---- Render final table without index numbers ----
+st.table(df)
+
+# ---- Optional CSV download ----
+csv = df.to_csv(index=False)
+st.download_button(
+    label="Download Schedule as CSV",
+    data=csv,
+    file_name="rfp_schedule.csv",
+    mime="text/csv"
+)
 
 else:
     st.info("Please select the RFP Posted Date to begin.")

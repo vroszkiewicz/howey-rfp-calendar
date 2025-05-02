@@ -107,7 +107,7 @@ if rfp_posted_date:
         {
             "Event": event,
             "Date": (
-                event_date.strftime('B% %d, %Y')
+                event_date.strftime('%B %d, %Y')
                 if isinstance(event_date, (datetime, date))
                 else event_date
             ),

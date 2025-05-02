@@ -91,12 +91,29 @@ if rfp_posted_date:
         schedule[event] = final_date
         adjustments[event] = adjusted
 
-    # ---- MANUAL TOWN COUNCIL APPROVAL ----
-    st.markdown("### Step Four: Town Council Approval")
-    st.write("Add the next Town Council meeting manually when finalizing the schedule.")
+    # ---- SELECT AND AUTO-ASSIGN TOWN COUNCIL MEETING ----
 
-    schedule["Town Council Approval of Contract"] = "Next Town Council Meeting (please verify manually)"
-    adjustments["Town Council Approval of Contract"] = False
+    st.markdown("### Step Four: Town Council Approval")
+
+    st.write("Select up to four upcoming Town Council meetings. The earliest valid meeting date will be used automatically.")
+
+    tc_meeting_1 = st.date_input("Meeting 1", key="tc1")
+    tc_meeting_2 = st.date_input("Meeting 2", key="tc2")
+    tc_meeting_3 = st.date_input("Meeting 3", key="tc3")
+    tc_meeting_4 = st.date_input("Meeting 4", key="tc4")
+
+    tc_dates = [d for d in [tc_meeting_1, tc_meeting_2, tc_meeting_3, tc_meeting_4] if isinstance(d, date)]
+    tc_dates = sorted(tc_dates)
+
+    contract_date = schedule["Contract Negotiated with Town"]
+    chosen_tc_date = next((d for d in tc_dates if d > contract_date), None)
+
+    if chosen_tc_date:
+        schedule["Town Council Approval of Contract"] = chosen_tc_date
+        adjustments["Town Council Approval of Contract"] = False
+    else:
+        schedule["Town Council Approval of Contract"] = "No valid Town Council meeting date available."
+        adjustments["Town Council Approval of Contract"] = False
 
     # ---- BUILD FINAL TABLE ----
     st.markdown("### Step Five: View and Download the Schedule")

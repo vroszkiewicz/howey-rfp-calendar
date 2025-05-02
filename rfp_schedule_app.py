@@ -99,21 +99,23 @@ if rfp_posted_date:
     # ---- FINAL SCHEDULE TABLE ----
     st.markdown("### 4. View and Download the Schedule")
 
+    from datetime import datetime, date
+
     today = date.today()
 
     df = pd.DataFrame([
         {
             "Event": event,
             "Date": (
-                event_date.strftime('%B %d, %Y')
-                if isinstance (event_date, (datetime, date))
+                event_date.strftime('B% %d, %Y')
+                if isinstance(event_date, (datetime, date))
                 else event_date
             ),
             "Days Left": (
-                (event_date - today).days
-                if isinstance(event_date, (datetime, date))
-                else ""
-            )
+                "Due Today" if (event_date == today) else
+                "Overdue" if (event_date < today) else
+                f"{(event_date - today).days} days"
+            ) if isinstance(event_date, (datetime, date)) else ""
         }
         for event, event_date in schedule.items()
     ])

@@ -147,6 +147,31 @@ if rfp_posted_date:
         mime="text/csv"
     )
 
+# ----EXPORT ICS TO OUTLOOK ----
+
+cal = Calendar()
+
+    for row in df.itertuples():
+        if isinstance(row.Date, str) and "20" in row.Date:
+            try:
+                dt = datetime.strptime(row.Date "%B %d, %Y")
+            except:
+                continue
+            e = ICSEvent()
+            e.name = f"{row.Event} - {project_title}"
+            e.begin = dt.strftime("%Y-%m-%d")
+            e.make_all_day()
+            e.description = f"{department} | {project_title}"
+            cal.events.add(e)
+        ics_file = cal.serialize()
+
+        st.download_button(
+            label="Download Schedule as Outlook Calendar (.ics)",
+            data=ics_file,
+            file_name="rfp_schedule.ics",
+            mime="text/calendar"
+        )
+
 else:
     st.info("Please select the RFP Posted Date to begin.")
 

@@ -16,7 +16,7 @@ st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Genera
 st.write("Enter your RFP timeline below. We’ll calculate all key dates and skip holidays and weekends.")
 
 # ---- STEP 1: SELECT CALENDAR LENGTH ----
-st.markdown("### Step One: Select Calendar Length")
+st.markdown("### Select Calendar Length")
 
 calendar_length = st.radio(
     "How long will this RFP be open?",
@@ -25,7 +25,7 @@ calendar_length = st.radio(
     horizontal=True
 )
 
-st.markdown("### Step Two: Add Project Details")
+st.markdown("### Add Project Details")
 
 project_title = st.text_input("Enter Project Title")
 
@@ -35,7 +35,7 @@ department = st.selectbox(
 )
 
 # ---- STEP 2: SELECT RFP POSTED DATE ----
-st.markdown("### Step Three: Select the RFP Posted Date")
+st.markdown("### Select the RFP Posted Date")
 
 rfp_posted_date = st.date_input("Select a date")
 
@@ -93,7 +93,7 @@ if rfp_posted_date:
 
     # ---- SELECT AND AUTO-ASSIGN TOWN COUNCIL MEETING ----
 
-    st.markdown("### Step Four: Town Council Approval")
+    st.markdown("### Town Council Approval")
 
     st.write("Select up to four upcoming Town Council meetings. The earliest valid meeting date will be used automatically.")
 
@@ -116,7 +116,7 @@ if rfp_posted_date:
         adjustments["Town Council Approval of Contract"] = False
 
     # ---- BUILD FINAL TABLE ----
-    st.markdown("### Step Five: View and Download the Schedule")
+    st.markdown("### View and Download the Schedule")
 
     df = pd.DataFrame([
         {

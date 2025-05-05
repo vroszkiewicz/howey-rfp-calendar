@@ -7,13 +7,12 @@ import holidays
 st.set_page_config(page_title="RFP Schedule Generator", layout="centered")
 
 # ---- BRANDING ----
-col1, col2, col3 = st.columns(3)
-with col2:
+col1, col2, col3, co4, col5 = st.columns(5)
+with col3:
     st.image("howey_logo.png", width=150)
 
 st.markdown("<h1 style='text-align: center;'>Town of Howey-in-the-Hills</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #004d7a;'>RFP Schedule Generator</h2>", unsafe_allow_html=True)
-st.write("Enter your RFP timeline below. We’ll calculate all key dates and skip holidays and weekends.")
 
 # ---- STEP 1: SELECT CALENDAR LENGTH ----
 st.markdown("### Select Calendar Length")

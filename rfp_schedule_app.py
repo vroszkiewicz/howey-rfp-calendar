@@ -30,7 +30,7 @@ project_title = st.text_input("Enter Project Title")
 
 department = st.selectbox(
     "Select Department",
-    ["Public Works", "Parks and Recreation", "Finance", "Administration", "Planning and Zoning"]
+    ["Public Works", "Administration", "Library", "Parks and Recreation", "Police Department"]
 )
 
 # ---- STEP 2: SELECT RFP POSTED DATE ----

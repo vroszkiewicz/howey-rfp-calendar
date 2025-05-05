@@ -93,7 +93,7 @@ if rfp_posted_date:
 
     # ---- SELECT AND AUTO-ASSIGN TOWN COUNCIL MEETING ----
 
-    st.markdown("### Select Four Upcoming Town Council Meeting Dates ")
+    st.markdown("### Select Upcoming Town Council Meeting Dates ")
 
     st.write("Select up to four upcoming Town Council meetings. The earliest valid meeting date will be used automatically.")
 
